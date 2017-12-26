@@ -64,10 +64,31 @@ var vm = new Vue({
     router,
     render: h => h(app),
     methods:{
-       
+       checkoutSession(){
+        this.axios.get('/beefly/user/api/v1/mycenter', {
+            params: {
+                accessToken: this.$store.state.token
+            }
+        })
+        .then( (res) => {
+            console.log('checkoutSession---------------',res)
+            var message = (res.data).message
+            if (message == '用户登录超时') {
+              this.$router.push('/login')
+            } else {
+              return
+            }
+        })
+        .catch( (err) => {
+            console.log('11111111111111111111111',err)
+        })
+      }
     },
     mounted:function(){
       //  window.addEventlistener('beforeunload',this.closeWin())
      
-    }
+    },
+    watch: {
+        '$route': 'checkoutSession'
+      }
 })
